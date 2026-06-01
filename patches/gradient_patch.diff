@@ -1,0 +1,32 @@
+diff --git a/models/hrm/hrm_act_v1.py b/models/hrm/hrm_act_v1.py
+--- a/models/hrm/hrm_act_v1.py  (1-step gradient)
++++ b/models/hrm/hrm_act_v1.py  (full BPTT)
+@@ -186,23 +186,12 @@
+         # Input encoding
+         input_embeddings = self._input_embeddings(batch["inputs"], batch["puzzle_identifiers"])
+ 
+-        # Forward iterations
+-        with torch.no_grad():
+-            z_H, z_L = carry.z_H, carry.z_L
++        # Forward iterations (full BPTT)
++        z_H, z_L = carry.z_H, carry.z_L
+ 
+-            for _H_step in range(self.config.H_cycles):
+-                for _L_step in range(self.config.L_cycles):
+-                    if not ((_H_step == self.config.H_cycles - 1) and (_L_step == self.config.L_cycles - 1)):
+-                        z_L = self.L_level(z_L, z_H + input_embeddings, **seq_info)
+-
+-                if not (_H_step == self.config.H_cycles - 1):
+-                    z_H = self.H_level(z_H, z_L, **seq_info)
+-
+-        assert not z_H.requires_grad and not z_L.requires_grad
+-
+-        # 1-step grad
+-        z_L = self.L_level(z_L, z_H + input_embeddings, **seq_info)
+-        z_H = self.H_level(z_H, z_L, **seq_info)
++        for _H_step in range(self.config.H_cycles):
++            for _L_step in range(self.config.L_cycles):
++                z_L = self.L_level(z_L, z_H + input_embeddings, **seq_info)
++            z_H = self.H_level(z_H, z_L, **seq_info)
+ 
+         # LM Outputs
