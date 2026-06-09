@@ -1,4 +1,4 @@
-# When Better Gradients Hurt: The Gradient--Architecture Interaction in Recursive Reasoning
+# When Better Gradients Hurt: The Gradient-Architecture Interaction in Recursive Reasoning
 
 **Paper 2 of the 2×2 disentanglement series**  
 Completing the factorial: HRM's dual-network hierarchy at both gradient methods reveals an unexpected interaction effect.
@@ -23,7 +23,7 @@ We complete the 2×2 factorial design left open by prior work. The result is cou
 
 ## Key Findings
 
-1. **Gradient quality is not universally beneficial.** Full BPTT boosts flat architectures but provides zero benefit—and may slightly harm—hierarchical architectures.
+1. **Gradient quality is not universally beneficial.** Full BPTT boosts flat architectures but provides zero benefit, and may slightly harm, hierarchical architectures.
 
 2. **Hierarchy compensates for poor gradients.** Under the 1-step gradient, HRM (9.2%) outperforms flat TRM (2.2%) by 4.2×, despite no EMA and a comparable parameter budget.
 
@@ -78,7 +78,7 @@ We complete the 2×2 factorial design left open by prior work. The result is cou
 - **Dataset:** Sudoku-Extreme from [sapientinc/sudoku-extreme](https://huggingface.co/datasets/sapientinc/sudoku-extreme)
 - **Hardware:** 2× NVIDIA Tesla T4 (16GB), PyTorch 2.10, CUDA 12.8
 - **Training:** 10,000 epochs, 500+500 examples, bfloat16, AdamW, ACT
-- **Gradient patch:** See `patches/gradient_patch.diff` — removes `torch.no_grad()` from the recurrent loop
+- **Gradient patch:** See `patches/gradient_patch.diff`, which removes `torch.no_grad()` from the recurrent loop
 - **Resume:** Checkpoints saved every 500 steps with automatic resume on restart
 
 ### Evaluate from checkpoints
@@ -138,7 +138,7 @@ Additional patches applied to match the controlled training budget:
 
 ```bibtex
 @article{jj2026interaction,
-  title={When Better Gradients Hurt: The Gradient--Architecture Interaction in Recursive Reasoning},
+  title={When Better Gradients Hurt: The Gradient-Architecture Interaction in Recursive Reasoning},
   author={Jani, Jatin},
   journal={arXiv preprint},
   year={2026}
@@ -147,5 +147,5 @@ Additional patches applied to match the controlled training budget:
 
 ## License
 
-MIT — see [LICENSE](LICENSE).  
+MIT. See [LICENSE](LICENSE).  
 Code based on [sapientinc/HRM](https://github.com/sapientinc/HRM) (MIT).
