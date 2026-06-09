@@ -134,6 +134,13 @@ Additional patches applied to match the controlled training budget:
 - `flash_attn` → PyTorch `F.scaled_dot_product_attention` fallback (T4 lacks flash-attn)
 - `.view()` → `.reshape()` (non-contiguous tensor fix for SDPA)
 
+## Training Curves
+
+![Loss](paper/plots/loss.png)
+![Exact Accuracy](paper/plots/exact.png)
+
+The 1-step and full BPTT variants show nearly identical training dynamics on the hierarchical architecture, unlike the flat architecture where full BPTT dramatically outperforms.
+
 ## Citation
 
 ```bibtex
