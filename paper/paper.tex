@@ -17,7 +17,7 @@
 \title{When Better Gradients Hurt: The Gradient-Architecture Interaction in Recursive Reasoning}
 
 \author{
-  Jatin Jani\thanks{Code: \url{https://github.com/heyiamjj/when-better-gradients-hurt}} \\
+  Jatin Jani\thanks{Code: \url{https://github.com/heyiamjj/when-better-gradients-hurt}}\thanks{Models: \url{https://huggingface.co/heyiamjj/when-better-gradients-hurt}} \\
   Independent Researcher \\
   \texttt{janijatin18@gmail.com}
 }
@@ -253,7 +253,7 @@ Our study has several limitations. First, we evaluate on a single task (Sudoku-E
 
 We have completed the first systematic disentanglement of architecture and gradient method in recursive reasoning models. The key finding is that gradient quality and architecture \emph{interact}: the same gradient improvement that boosts flat architectures by 8.6$\times$ provides no benefit, and may slightly harm, hierarchical architectures. HRM's dual-network structure, often criticized as unnecessary complexity, provides genuine robustness to poor gradient quality.
 
-The completed $2\times2$ matrix suggests a natural design target for future work: architectures that can selectively regulate gradient flow per timescale, capturing flat architectures' ability to exploit good gradients \emph{and} hierarchical architectures' robustness to poor gradients. Whether this is achieved through gradient gating, architectural hybridization, adaptive unrolling, or an entirely different mechanism remains an open question---but the interaction effect documented here establishes it as a concrete, measurable goal.
+The completed $2\times2$ matrix suggests a natural design target for future work: architectures that can selectively regulate gradient flow per timescale, capturing flat architectures' ability to exploit good gradients \emph{and} hierarchical architectures' robustness to poor gradients. Whether this is achieved through gradient gating, architectural hybridization, adaptive unrolling, or an entirely different mechanism remains an open question. The interaction effect documented here establishes it as a concrete, measurable goal.
 
 \section*{Acknowledgments}
 
