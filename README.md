@@ -3,7 +3,7 @@
 **Paper 2 of the 2×2 disentanglement series**  
 Completing the factorial: HRM's dual-network hierarchy at both gradient methods reveals an unexpected interaction effect.
 
-**Paper:** [arXiv:XXXX.XXXXX]  
+**Paper:** [10.5281/zenodo.20712415](https://doi.org/10.5281/zenodo.20712415)  
 **Author:** Jatin Jani, Independent Researcher
 
 ---
@@ -147,7 +147,8 @@ The 1-step and full BPTT variants show nearly identical training dynamics on the
 @article{jj2026interaction,
   title={When Better Gradients Hurt: The Gradient-Architecture Interaction in Recursive Reasoning},
   author={Jani, Jatin},
-  journal={arXiv preprint},
+  journal={Zenodo preprint},
+  doi={10.5281/zenodo.20712415},
   year={2026}
 }
 ```
