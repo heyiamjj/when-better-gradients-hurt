@@ -10,9 +10,24 @@
 \usepackage{nicefrac}
 \usepackage{microtype}
 \usepackage{graphicx}
+\usepackage{listings}
 \usepackage{xcolor}
 \usepackage{caption}
 \usepackage{subcaption}
+
+\definecolor{codegreen}{rgb}{0,0.6,0}
+\definecolor{codegray}{rgb}{0.5,0.5,0.5}
+\definecolor{codepurple}{rgb}{0.58,0,0.82}
+\lstset{
+  basicstyle=\footnotesize\ttfamily,
+  breaklines=true,
+  keepspaces=true,
+  showstringspaces=false,
+  numbers=left,
+  numbersep=5pt,
+  frame=single,
+  rulecolor=\color{codegray},
+}
 
 \title{When Better Gradients Hurt: The Gradient-Architecture Interaction in Recursive Reasoning}
 
@@ -26,7 +41,7 @@
 \maketitle
 
 \begin{abstract}
-A prior controlled experiment established that gradient quality, not architecture, drives the performance gap between Hierarchical Reasoning Models (HRM) and Tiny Recursive Models (TRM) on Sudoku-Extreme: a flat architecture with full backpropagation through time (BPTT) achieves 18.9\% exact accuracy versus 2.2\% with a 1-step gradient approximation, an 8.6$\times$ difference. The natural follow-up, does fixing the gradient unlock HRM's hierarchical architecture?, remained untested. In this work, we complete the $2\times2$ factorial design by evaluating HRM's dual-network hierarchy with full BPTT under an identical training budget. We find that full BPTT \emph{degrades} HRM from 9.2\% to 8.7\% exact accuracy (token accuracy 68.8\% $\rightarrow$ 69.3\%), in sharp contrast to the 8.6$\times$ improvement observed for flat architectures. This reveals a strong, previously undocumented interaction effect: gradient quality and architecture are not independent factors. Flat networks require good gradients; hierarchical networks are robust to poor gradients but fail to benefit from full BPTT. We argue that gradient gating through the hierarchical structure, the very mechanism HRM uses to achieve $O(1)$ memory, may serve a regularizing role that full BPTT disrupts. Our completed $2\times2$ matrix establishes gradient-architecture interaction as a fundamental design constraint for recursive reasoning models, and motivates gradient-aware architectures that can selectively allow or restrict gradient flow per timescale.
+A prior controlled experiment demonstrated that architecture alone does not drive the performance gap between Hierarchical Reasoning Models (HRM) and Tiny Recursive Models (TRM) on Sudoku-Extreme. The gradient method also plays a critical role. Specifically, a flat architecture with full backpropagation through time (BPTT) achieves 18.9\% exact accuracy versus 2.2\% with a 1-step gradient approximation, an 8.6$\times$ difference. The natural follow-up, does fixing the gradient unlock HRM's hierarchical architecture?, remained untested. In this work, we complete the $2\times2$ factorial design by evaluating HRM's dual-network hierarchy with full BPTT under an identical training budget. We find that full BPTT \emph{degrades} (or does not improve) HRM from 9.2\% to 8.7\% exact accuracy (token accuracy 68.8\% $\rightarrow$ 69.3\%), in sharp contrast to the 8.6$\times$ improvement observed for flat architectures. This reveals a strong, previously undocumented interaction effect: gradient method and architecture are not independent factors. Flat networks excel when given good gradients, fully exploiting them to achieve strong performance. Hierarchical networks excel at robustness, performing well even with poor gradients, but do not benefit from full BPTT. We argue that gradient gating through the hierarchical structure, the very mechanism HRM uses to achieve $O(1)$ memory, may serve a regularizing role that full BPTT disrupts. Our completed $2\times2$ matrix establishes gradient-architecture interaction as a fundamental design constraint for recursive reasoning models, and motivates gradient-aware architectures that can selectively allow or restrict gradient (or information) flow per timescale.
 \end{abstract}
 
 \keywords{Recursive reasoning \and gradient methods \and hierarchical architectures \and backpropagation through time \and architecture design}
@@ -37,7 +52,7 @@ A prior controlled experiment established that gradient quality, not architectur
 
 Two recent models have demonstrated that small neural networks can solve complex reasoning puzzles, Sudoku, maze pathfinding, and ARC-AGI, without pretraining or chain-of-thought data, using only $\sim$1,000 training examples. The Hierarchical Reasoning Model (HRM)~\cite{wang2025hrm} uses two recurrent networks operating at different timescales (an H-module for slow abstract planning and an L-module for fast detailed computation), achieving 55.0\% exact accuracy on Sudoku-Extreme with 27M parameters. Tiny Recursive Models (TRM)~\cite{jolicoeur2025trm} simplifies this to a single 2-layer network, achieving 87.4\% with only 7M parameters.
 
-The community interpreted TRM's 32.4-point advantage as validation that architectural simplicity is superior~\cite{arcprize2025}. However, TRM changed two independent variables simultaneously: it flattened the architecture (two networks $\rightarrow$ one) \emph{and} replaced HRM's 1-step gradient approximation with full backpropagation through time (BPTT). Prior work~\cite{jj2025disentangling} resolved this confound by isolating the gradient method: a flat architecture with HRM's 1-step gradient achieves only 2.2\% exact accuracy versus 18.9\% with full BPTT, demonstrating that gradient quality, not architecture, is the dominant factor, at least for flat networks.
+The community interpreted TRM's 32.4-point advantage as validation that architectural simplicity is superior~\cite{arcprize2025}. However, TRM changed two independent variables simultaneously: it flattened the architecture (two networks $\rightarrow$ one) \emph{and} replaced HRM's 1-step gradient approximation with full backpropagation through time (BPTT). Prior work~\cite{jj2025disentangling} resolved this confound by isolating the gradient method: a flat architecture with HRM's 1-step gradient achieves only 2.2\% exact accuracy versus 18.9\% with full BPTT, demonstrating that architecture alone is not the dominant factor, at least for flat networks. The gradient method also plays a critical role.
 
 \subsection{The Open Question}
 
@@ -49,7 +64,7 @@ We answer this question through a controlled experiment. We take HRM's exact arc
 
 \begin{itemize}
     \item We complete the $2\times2$ factorial design, providing the first four-cell comparison of architecture and gradient method in recursive reasoning (Table~\ref{tab:fullmatrix}).
-    \item We discover a strong interaction effect: full BPTT improves flat architectures by 8.6$\times$ (2.2\% $\rightarrow$ 18.9\%) but \emph{degrades} HRM's exact accuracy (9.2\% $\rightarrow$ 8.7\%). Better gradients do not universally improve performance.
+    \item We discover a strong interaction effect: full BPTT improves flat architectures by 8.6$\times$ (2.2\% $\rightarrow$ 18.9\%) but \emph{degrades} (or does not improve) HRM's exact accuracy (9.2\% $\rightarrow$ 8.7\%). Better gradients do not universally improve performance.
     \item We show that hierarchical architectures are intrinsically robust to poor gradient quality: HRM with 1-step gradients (9.2\%) outperforms flat TRM with 1-step gradients (2.2\%) by 4.2$\times$, despite a smaller parameter budget and no EMA.
     \item We establish gradient-architecture interaction as a fundamental design axis in recursive reasoning models, motivating the development of gradient-aware architectures.
 \end{itemize}
@@ -106,7 +121,7 @@ The relevant code change is shown in Figure~\ref{fig:patch}.
 
 \begin{figure}[t]
 \centering
-\begin{verbatim}
+\begin{lstlisting}[language=Python, basicstyle=\footnotesize\ttfamily, frame=single]
 # HRM original (1-step gradient, O(1) memory):
 with torch.no_grad():
     z_H, z_L = carry.z_H, carry.z_L
@@ -125,7 +140,7 @@ for _H_step in range(H_cycles):
     for _L_step in range(L_cycles):
         z_L = L_level(z_L, z_H + x)   # GRAD
     z_H = H_level(z_H, z_L)           # GRAD
-\end{verbatim}
+\end{lstlisting}
 \caption{The gradient patch. Top: original HRM 1-step gradient (gradients through 2 final function calls). Bottom: our full BPTT variant (gradients through all 6 function calls). The forward computation is identical; only the gradient boundary differs.}
 \label{fig:patch}
 \end{figure}
@@ -185,7 +200,7 @@ Table~\ref{tab:fullmatrix} presents the complete four-cell comparison. The right
 
 Three unexpected patterns emerge from the completed matrix:
 
-\textbf{1. Gradient quality is not universally beneficial.} While full BPTT improves flat-architecture exact accuracy by 8.6$\times$ (2.2\% $\rightarrow$ 18.9\%), it \emph{degrades} HRM's exact accuracy from 9.2\% to 8.7\%. Token accuracy shows a modest improvement (68.8\% $\rightarrow$ 69.3\%), but this does not translate to better complete solutions. The $O(T)$ memory cost of full BPTT produces no net benefit for the hierarchical architecture.
+\textbf{1. Gradient quality is not universally beneficial.} While full BPTT improves flat-architecture exact accuracy by 8.6$\times$ (2.2\% $\rightarrow$ 18.9\%), it \emph{degrades} (or does not improve) HRM's exact accuracy from 9.2\% to 8.7\%. Token accuracy shows a modest improvement (68.8\% $\rightarrow$ 69.3\%), but this does not translate to better complete solutions. The $O(T)$ memory cost of full BPTT produces no net benefit for the hierarchical architecture.
 
 \textbf{2. The hierarchy compensates for poor gradients.} Under the 1-step gradient, HRM (9.2\%) outperforms flat TRM (2.2\%) by 4.2$\times$ in exact accuracy, despite having no EMA and a similar parameter budget. The dual-network structure provides intrinsic robustness to gradient approximation that flat architectures lack. HRM's authors were partially correct, the hierarchy matters, but not for the reasons they proposed.
 
@@ -251,9 +266,9 @@ Our study has several limitations. First, we evaluate on a single task (Sudoku-E
 
 \section{Conclusion and Future Work}
 
-We have completed the first systematic disentanglement of architecture and gradient method in recursive reasoning models. The key finding is that gradient quality and architecture \emph{interact}: the same gradient improvement that boosts flat architectures by 8.6$\times$ provides no benefit, and may slightly harm, hierarchical architectures. HRM's dual-network structure, often criticized as unnecessary complexity, provides genuine robustness to poor gradient quality.
+We have completed the first systematic disentanglement of architecture and gradient method in recursive reasoning models. The key finding is that gradient method and architecture \emph{interact}: the same gradient improvement that boosts flat architectures by 8.6$\times$ provides no benefit, and may slightly harm, hierarchical architectures. HRM's dual-network structure, often criticized as unnecessary complexity, provides genuine robustness to poor gradient quality.
 
-The completed $2\times2$ matrix suggests a natural design target for future work: architectures that can selectively regulate gradient flow per timescale, capturing flat architectures' ability to exploit good gradients \emph{and} hierarchical architectures' robustness to poor gradients. Whether this is achieved through gradient gating, architectural hybridization, adaptive unrolling, or an entirely different mechanism remains an open question. The interaction effect documented here establishes it as a concrete, measurable goal.
+The completed $2\times2$ matrix suggests a natural design target for future work: architectures that can selectively regulate gradient (or information) flow per timescale, capturing flat architectures' ability to exploit good gradients \emph{and} hierarchical architectures' robustness to poor gradients. Whether this is achieved through gradient gating, architectural hybridization, adaptive unrolling, or an entirely different mechanism remains an open question. The interaction effect documented here establishes it as a concrete, measurable goal.
 
 \section*{Acknowledgments}
 
